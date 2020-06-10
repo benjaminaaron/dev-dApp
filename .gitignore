@@ -3,3 +3,4 @@ node_modules/
 src/build/*
 package-lock.json
 src/config/deployment-info.js
+build/
