@@ -7,13 +7,14 @@ const contractEventNotifier = store => next => action => {
 	}
 
 	const contractEvent = action.event.event;
+	let values = action.event.returnValues;
 
 	if (contractEvent === 'TestEvent') {
-		console.log(action);
+		console.log('TestEvent', action);
 
 		store.dispatch({
 			type: 'TEST_DISPATCH',
-			object: action
+			contractAddress: values.contractAddress
 		});
 	}
 };
@@ -21,7 +22,7 @@ const contractEventNotifier = store => next => action => {
 const appMiddlewares = [contractEventNotifier];
 
 const initialState = {
-	arr: []
+	contractAddresses: []
 };
 
 function dappStoreReducer(state = initialState, action) {
@@ -33,7 +34,7 @@ function dappStoreReducer(state = initialState, action) {
 			};
 		case 'TEST_DISPATCH':
 			return Object.assign({}, state, {
-				arr: [...state.arr, ...action.object]
+				contractAddresses: [...state.contractAddresses, action.contractAddress]
 			});
 		default:
 			return state;
