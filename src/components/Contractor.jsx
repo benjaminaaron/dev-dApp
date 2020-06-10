@@ -1,0 +1,6 @@
+
+const contractCall = () => {};
+
+export {
+	contractCall
+};
