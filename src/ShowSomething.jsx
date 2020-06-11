@@ -4,10 +4,10 @@ import { drizzleConnect } from 'drizzle-react';
 function ShowSomething(props) {
 	return (
         <>
-            <b>Contract addresses</b>:
-            {props.contractAddresses.map((addr, index) => {
+            <b>Contract events received</b>:
+            {props.contractEventsReceived.map((obj, index) => {
                 return (
-                    <div key={index}>{addr}</div>
+                    <div key={index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
                 )})}
         </>
     )
@@ -15,7 +15,7 @@ function ShowSomething(props) {
 
 const mapStateToProps = state => {
 	return {
-		contractAddresses: state.dappStore.contractAddresses
+		contractEventsReceived: state.dappStore.contractEventsReceived
 	};
 };
 
