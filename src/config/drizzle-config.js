@@ -1,5 +1,5 @@
-import Dev from '../build/contracts/Dev.json';
-import { DevAddress } from './deployment-info.js';
+import DevContract from '../build/contracts/DevContract.json';
+import { DevContractAddress } from './deployment-info.js';
 
 import Web3 from 'web3';
 const web3 = new Web3(window.ethereum);
@@ -14,12 +14,12 @@ const drizzleConfig = {
 	},
 	contracts: [
 		{
-			contractName: 'Dev',
-			web3Contract: new web3.eth.Contract(Dev.abi, DevAddress)
+			contractName: 'DevContract',
+			web3Contract: new web3.eth.Contract(DevContract.abi, DevContractAddress)
 		}
 	],
 	events: {
-		Dev: ['TestEvent']
+		DevContract: ['TestEvent']
 	},
 	polls: {
 		accounts: 1500

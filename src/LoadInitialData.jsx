@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 function LoadInitialData(props, context) {
 
 	const isInit = useRef({
-		Dev: false
+		DevContract: false
 	});
 
 	useEffect(() => {
@@ -13,8 +13,8 @@ function LoadInitialData(props, context) {
 			return;
 		}
 
-		if (!isInit.current.Dev && props.contracts.Dev.initialized) {
-			isInit.current.Dev = true;
+		if (!isInit.current.DevContract && props.contracts.DevContract.initialized) {
+			isInit.current.DevContract = true;
 		}
 	});
 
