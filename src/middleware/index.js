@@ -19,11 +19,17 @@ const contractEventNotifier = store => next => action => {
 const appMiddlewares = [contractEventNotifier];
 
 const initialState = {
-	contractEventsReceived: []
+	contractEventsReceived: [],
+	defaultAccount: null
 };
 
 function dappStoreReducer(state = initialState, action) {
 	switch (action.type) {
+		case 'ACCOUNT_BALANCE_FETCHED':
+			return {
+				...state,
+				defaultAccount: action.account
+			};
 		case 'DRIZZLE_INITIALIZED':
 			return {
 				...state,
