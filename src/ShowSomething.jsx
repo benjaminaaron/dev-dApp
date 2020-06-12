@@ -2,6 +2,7 @@ import React from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import { DevContractAddress } from './config/deployment-info.js';
+const truffleContract = require("@truffle/contract");
 
 function ShowSomething(props, context) {
 
@@ -20,9 +21,8 @@ function ShowSomething(props, context) {
     };
 
     const click3 = () => {
-        const contract = require('truffle-contract');
         const json = require('./build/contracts/DevContract.json');
-        let Contractor = contract({
+        let Contractor = truffleContract({
             abi: json.abi
         });
         Contractor.setProvider(window.web3.currentProvider);
