@@ -45,9 +45,8 @@ function ShowSomething(props, context) {
     };
 
     const click4 = () => {
-        let web3 = new Web3(window.ethereum);
         const json = require('./build/contracts/DevContract.json');
-        let contract = new web3.eth.Contract(
+        let contract = new window.web3.eth.Contract(
             json.abi,
             DevContractAddress
         );
@@ -60,27 +59,27 @@ function ShowSomething(props, context) {
     };
 
     const click5 = () => {
-        let web3 = new Web3(window.ethereum);
+        window.web3 = new Web3(window.ethereum);
         const json = require('./build/contracts/DevContract.json');
-        let contract = new web3.eth.Contract(
+        let contract = new window.web3.eth.Contract(
             json.abi,
             DevContractAddress
         );
         let eventName = 'TestEvent';
 
-        const eventJsonInterface = web3.utils._.find(
+        const eventJsonInterface = window.web3.utils._.find(
             contract._jsonInterface,
             o => o.name === eventName && o.type === 'event',
         );
 
-        const subscription = web3.eth.subscribe('logs', {
+        const subscription = window.web3.eth.subscribe('logs', {
                 address: contract.options.address,
                 topics: [eventJsonInterface.signature]
             }, (error, result) => {
                 if (error) {
                     return;
                 }
-                const eventObj = web3.eth.abi.decodeLog(
+                const eventObj = window.web3.eth.abi.decodeLog(
                     eventJsonInterface.inputs,
                     result.data,
                     result.topics.slice(1)
