@@ -1,6 +1,7 @@
 import React from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
+import { DevContractAddress } from './config/deployment-info.js';
 
 function ShowSomething(props, context) {
 
@@ -18,11 +19,35 @@ function ShowSomething(props, context) {
 			});
     };
 
+    const click3 = () => {
+        const contract = require('truffle-contract');
+        const json = require('./build/contracts/DevContract.json');
+        let Contractor = contract({
+            abi: json.abi
+        });
+        Contractor.setProvider(window.web3.currentProvider);
+        let contractDeployed = Contractor.at(DevContractAddress);
+
+        contractDeployed.then(function(instance) {
+            return instance['triggerEvent']({
+                from: props.defaultAccount
+            });
+        })
+        .then(function(result) {
+            console.log('Results of submitting: ', result);
+        })
+        .catch(function(err) {
+            console.log('Error: ', err.message);
+        });
+    };
+
 	return (
         <>
             <a href="#" onClick={click1}>Trigger contract event using <b>cacheSend()</b></a>
             <br/>
             <a href="#" onClick={click2}>Trigger contract event using <b>send()</b></a>
+            <br/>
+            <a href="#" onClick={click3}>Trigger contract event using <b>instance.method()</b></a>
             <br/><br/>
             <b>Contract events received</b>:
             {props.contractEventsReceived.map((obj, index) => {
