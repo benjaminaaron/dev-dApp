@@ -2,6 +2,7 @@ import React from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import { DevContractAddress } from './config/deployment-info.js';
+import Web3 from 'web3';
 const truffleContract = require("@truffle/contract");
 
 function ShowSomething(props, context) {
@@ -41,13 +42,30 @@ function ShowSomething(props, context) {
         });
     };
 
+    const click4 = () => {
+        let web3 = new Web3(window.ethereum);
+        const json = require('./build/contracts/DevContract.json');
+        let contract = new web3.eth.Contract(
+            json.abi,
+            DevContractAddress
+        );
+        contract.methods.triggerEvent().send({
+            from: props.defaultAccount
+        })
+        .then(function(result) {
+            console.log('Result: ', result);
+        });
+    };
+
 	return (
         <>
-            <a href="#" onClick={click1}>Trigger contract event using <b>cacheSend()</b></a>
+            <a href="#" onClick={click1}>Trigger contract event using <b>drizzle cacheSend()</b></a>
             <br/>
-            <a href="#" onClick={click2}>Trigger contract event using <b>send()</b></a>
+            <a href="#" onClick={click2}>Trigger contract event using <b>drizzle send()</b></a>
             <br/>
-            <a href="#" onClick={click3}>Trigger contract event using <b>instance.method()</b></a>
+            <a href="#" onClick={click3}>Trigger contract event using <b>@truffle/contract</b></a>
+            <br/>
+            <a href="#" onClick={click4}>Trigger contract event using <b>web3 send()</b></a>
             <br/><br/>
             <b>Contract events received</b>:
             {props.contractEventsReceived.map((obj, index) => {
