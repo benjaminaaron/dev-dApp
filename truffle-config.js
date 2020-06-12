@@ -1,4 +1,6 @@
 const path = require('path');
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const config = require('./config.json');
 
 module.exports = {
 	contracts_build_directory: path.join(__dirname, 'src/build/contracts'),
@@ -8,6 +10,14 @@ module.exports = {
 			port: 7545,
 			network_id: '*'
 		},
+		rinkeby: {
+			provider: function() {
+				return new HDWalletProvider(config.MNEMONIC, 'https://rinkeby.infura.io/v3/' + config.INFURA_API_KEY);
+			},
+			network_id: 4,
+			gas: 7465030,
+			gasPrice: 10000000000
+		}
 	},
 	compilers: {
 		solc: {

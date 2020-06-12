@@ -4,3 +4,4 @@ src/build/*
 package-lock.json
 src/config/deployment-info.js
 build/
+config.json
