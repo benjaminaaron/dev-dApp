@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import { DevContractAddress } from './config/deployment-info.js';
@@ -6,6 +6,8 @@ import Web3 from 'web3';
 const truffleContract = require("@truffle/contract");
 
 function ShowSomething(props, context) {
+
+    const [events, setEvents] = useState([]);
 
     const click1 = () => {
         let contract = context.drizzle.contracts.DevContract;
@@ -57,6 +59,37 @@ function ShowSomething(props, context) {
         });
     };
 
+    const click5 = () => {
+        let web3 = new Web3(window.ethereum);
+        const json = require('./build/contracts/DevContract.json');
+        let contract = new web3.eth.Contract(
+            json.abi,
+            DevContractAddress
+        );
+        let eventName = 'TestEvent';
+
+        const eventJsonInterface = web3.utils._.find(
+            contract._jsonInterface,
+            o => o.name === eventName && o.type === 'event',
+        );
+
+        const subscription = web3.eth.subscribe('logs', {
+                address: contract.options.address,
+                topics: [eventJsonInterface.signature]
+            }, (error, result) => {
+                if (error) {
+                    return;
+                }
+                const eventObj = web3.eth.abi.decodeLog(
+                    eventJsonInterface.inputs,
+                    result.data,
+                    result.topics.slice(1)
+                );
+                console.log('New event:', eventObj)
+                setEvents([...events, "new"]);
+          });
+    };
+
 	return (
         <>
             <a href="#" onClick={click1}>Trigger contract event using <b>drizzle cacheSend()</b></a>
@@ -67,10 +100,18 @@ function ShowSomething(props, context) {
             <br/>
             <a href="#" onClick={click4}>Trigger contract event using <b>web3 send()</b></a>
             <br/><br/>
-            <b>Contract events received</b>:
+            <a href="#" onClick={click5}>Subscribe to TestEvent using <b>web3</b></a>
+            <br/><br/>
+            <b>Contract events received via redux store</b>:
             {props.contractEventsReceived.map((obj, index) => {
                 return (
                     <div key={index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
+                )})}
+            <br/><br/>
+            <b>Contract events received via subscriptions</b>:
+            {events.map((obj, index) => {
+                return (
+                    <div key={index}><small>event</small>: {index}</div>
                 )})}
         </>
     )
