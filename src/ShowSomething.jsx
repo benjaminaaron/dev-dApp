@@ -10,14 +10,19 @@ function ShowSomething(props, context) {
     };
 
     const click2 = () => {
-        // TODO
+        context.drizzle.contracts.DevContract.methods
+			.triggerEvent()
+			.send({ from: props.defaultAccount })
+			.then(result => {
+				console.log('Results of submitting: ', result);
+			});
     };
 
 	return (
         <>
-            <a href="#" onClick={click1}>Trigger contract event using <b>cacheSend</b></a>
+            <a href="#" onClick={click1}>Trigger contract event using <b>cacheSend()</b></a>
             <br/>
-            <a href="#" onClick={click2}>Trigger contract event using ?</a>
+            <a href="#" onClick={click2}>Trigger contract event using <b>send()</b></a>
             <br/><br/>
             <b>Contract events received</b>:
             {props.contractEventsReceived.map((obj, index) => {
