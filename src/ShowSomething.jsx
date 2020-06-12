@@ -87,6 +87,15 @@ function ShowSomething(props, context) {
                 );
                 console.log('New event:', eventObj)
                 setEvents([...events, "new"]);
+        })
+        .on('connected', function(subscriptionId) {
+            console.log("subscriptionId:", subscriptionId);
+        })
+        .on('data', function(log) {
+            console.log('data:', log);
+        })
+        .on('changed', function(log) {
+            console.log('changed:', log);
         });
 
         console.log("subscribed to TestEvent on DevContract");
