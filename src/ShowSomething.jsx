@@ -16,11 +16,11 @@ function ShowSomething(props, context) {
 
     const click2 = () => {
         context.drizzle.contracts.DevContract.methods
-			.triggerEvent()
-			.send({ from: props.defaultAccount })
-			.then(result => {
-				console.log('Results of submitting: ', result);
-			});
+            .triggerEvent()
+            .send({ from: props.defaultAccount })
+            .then(result => {
+                console.log('Results of submitting: ', result);
+            });
     };
 
     const click3 = () => {
@@ -87,10 +87,12 @@ function ShowSomething(props, context) {
                 );
                 console.log('New event:', eventObj)
                 setEvents([...events, "new"]);
-          });
+        });
+
+        console.log("subscribed to TestEvent on DevContract");
     };
 
-	return (
+    return (
         <>
             <a href="#" onClick={click1}>Trigger contract event using <b>drizzle cacheSend()</b></a>
             <br/>
@@ -118,14 +120,14 @@ function ShowSomething(props, context) {
 }
 
 ShowSomething.contextTypes = {
-	drizzle: PropTypes.object
+    drizzle: PropTypes.object
 };
 
 const mapStateToProps = state => {
-	return {
-		contractEventsReceived: state.dappStore.contractEventsReceived,
-		defaultAccount: state.dappStore.defaultAccount
-	};
+    return {
+        contractEventsReceived: state.dappStore.contractEventsReceived,
+        defaultAccount: state.dappStore.defaultAccount
+    };
 };
 
 export default drizzleConnect(ShowSomething, mapStateToProps);
