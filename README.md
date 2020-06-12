@@ -1,2 +1,2 @@
 # dev-dApp
- A mini setup to test basic things around dApp things
+ A setup to test basic dApp things. A combination of the [FIN4Xplorer](https://github.com/FuturICT2/FIN4Xplorer) and the [FIN4Contracts](https://github.com/FuturICT2/FIN4Contracts) repos, reduced to the absolute minimum.
