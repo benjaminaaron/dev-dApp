@@ -119,6 +119,7 @@ function Content(props, context) {
     // ethers
 
     const [ethersContract, setEthersContract] = useState(null);
+    const ethersEvents = useRef([]);
 
     const click7 = () => {
         const json = require('./build/contracts/DevContract.json');
@@ -134,6 +135,8 @@ function Content(props, context) {
 
         _ethersContract.on('TestEvent', (...args) => {
             console.log('ethers received TestEvent:', args);
+            ethersEvents.current.push((args.pop()).args);
+            forceUpdate();
         });
 
         setEthersContract(_ethersContract);
