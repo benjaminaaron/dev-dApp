@@ -10,7 +10,7 @@ const useForceUpdate = () => { // via https://stackoverflow.com/a/53837442/24741
     return () => setValue(value => ++value);
 }
 
-function ShowSomething(props, context) {
+function Content(props, context) {
 
     const contractEvents = useRef([]);
     const forceUpdate = useForceUpdate();
@@ -135,7 +135,7 @@ function ShowSomething(props, context) {
     )
 }
 
-ShowSomething.contextTypes = {
+Content.contextTypes = {
     drizzle: PropTypes.object
 };
 
@@ -146,4 +146,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default drizzleConnect(ShowSomething, mapStateToProps);
+export default drizzleConnect(Content, mapStateToProps);

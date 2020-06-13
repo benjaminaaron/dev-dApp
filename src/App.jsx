@@ -3,13 +3,13 @@ import { DrizzleProvider } from 'drizzle-react';
 import drizzleConfig from './config/drizzle-config';
 import store from './middleware';
 import LoadInitialData from './LoadInitialData';
-import ShowSomething from './ShowSomething';
+import Content from './Content';
 
 function App(props) {
 	return (
 		<DrizzleProvider store={store} options={drizzleConfig}>
 			<>
-				<ShowSomething />
+				<Content />
 				<LoadInitialData />
 			</>
 		</DrizzleProvider>
