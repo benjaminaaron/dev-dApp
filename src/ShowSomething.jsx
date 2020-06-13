@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import { DevContractAddress } from './config/deployment-info.js';
 import Web3 from 'web3';
 const truffleContract = require("@truffle/contract");
 
+const useForceUpdate = () => { // via https://stackoverflow.com/a/53837442/2474159
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
+}
+
 function ShowSomething(props, context) {
 
-    const [events, setEvents] = useState([]);
+    const contractEvents = useRef([]);
+    const forceUpdate = useForceUpdate();
 
     const click1 = () => {
         let contract = context.drizzle.contracts.DevContract;
@@ -72,11 +78,12 @@ function ShowSomething(props, context) {
             o => o.name === eventName && o.type === 'event',
         );
 
-        const subscription = window.web3.eth.subscribe('logs', {
+        window.web3.eth.subscribe('logs', {
                 address: contract.options.address,
                 topics: [eventJsonInterface.signature]
             }, (error, result) => {
                 if (error) {
+                    console.log("error", error);
                     return;
                 }
                 const eventObj = window.web3.eth.abi.decodeLog(
@@ -84,9 +91,10 @@ function ShowSomething(props, context) {
                     result.data,
                     result.topics.slice(1)
                 );
-                console.log('New event:', eventObj)
-                setEvents([...events, "new"]);
-        })
+                console.log('New event:', eventObj);
+                contractEvents.current.push(eventObj);
+                forceUpdate();
+            })
         .on('connected', function(subscriptionId) {
             console.log("subscriptionId:", subscriptionId);
         })
@@ -119,9 +127,9 @@ function ShowSomething(props, context) {
                 )})}
             <br/><br/>
             <b>Contract events received via subscriptions</b>:
-            {events.map((obj, index) => {
+            {contractEvents.current.map((obj, index) => {
                 return (
-                    <div key={index}><small>event</small>: {index}</div>
+                    <div key={index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
                 )})}
         </>
     )
