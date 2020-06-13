@@ -3,6 +3,7 @@ import { drizzleConnect } from 'drizzle-react';
 import PropTypes from 'prop-types';
 import { DevContractAddress } from './config/deployment-info.js';
 import Web3 from 'web3';
+import { ethers } from "ethers";
 const truffleContract = require("@truffle/contract");
 
 const useForceUpdate = () => { // via https://stackoverflow.com/a/53837442/2474159
@@ -115,6 +116,35 @@ function Content(props, context) {
         });
     };
 
+    // ethers
+
+    const [ethersContract, setEthersContract] = useState(null);
+
+    const click7 = () => {
+        const json = require('./build/contracts/DevContract.json');
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const signer = provider.getSigner()
+
+        let _ethersContract = new ethers.Contract(
+            DevContractAddress,
+            json.abi,
+            signer
+        );
+
+        _ethersContract.on('TestEvent', (...args) => {
+            console.log('ethers received TestEvent:', args);
+        });
+
+        setEthersContract(_ethersContract);
+    };
+
+    const click8 = () => {
+        ethersContract.triggerEvent().then(function(tx) {
+            console.log('ethers tx result:', tx);
+        });
+    };
+
     return (
         <>
             <h2>drizzle</h2>
@@ -131,6 +161,11 @@ function Content(props, context) {
 
             <h2>@truffle/contract</h2>
             <a href="#" onClick={click3}>Trigger contract event using <b>@truffle/contract</b></a>
+
+            <h2>ethers</h2>
+            <a href="#" onClick={click7}>Add contract and event listener</a>
+            <br/>
+            <a href="#" onClick={click8}>Trigger contract event using <b>ethers</b></a>
 
             <br/><br/>
             <h3>Contract events received via redux store</h3>
