@@ -15,6 +15,8 @@ function Content(props, context) {
     const contractEvents = useRef([]);
     const forceUpdate = useForceUpdate();
 
+    // drizzle
+
     const click1 = () => {
         let contract = context.drizzle.contracts.DevContract;
         const stackId = contract.methods.triggerEvent.cacheSend({ from: props.defaultAccount });
@@ -28,6 +30,8 @@ function Content(props, context) {
                 console.log('Results of submitting: ', result);
             });
     };
+
+    // @truffle/contract
 
     const click3 = () => {
         const json = require('./build/contracts/DevContract.json');
@@ -50,36 +54,30 @@ function Content(props, context) {
         });
     };
 
+    // web3
+
+    const [contractWeb3, setContractWeb3] = useState(null);
+
     const click4 = () => {
+        window.web3 = new Web3(window.ethereum);
         const json = require('./build/contracts/DevContract.json');
-        let contract = new window.web3.eth.Contract(
+        setContractWeb3(new window.web3.eth.Contract(
             json.abi,
             DevContractAddress
-        );
-        contract.methods.triggerEvent().send({
-            from: props.defaultAccount
-        })
-        .then(function(result) {
-            console.log('Result: ', result);
-        });
+        ));
+        console.log("Contract added");
     };
 
     const click5 = () => {
-        window.web3 = new Web3(window.ethereum);
-        const json = require('./build/contracts/DevContract.json');
-        let contract = new window.web3.eth.Contract(
-            json.abi,
-            DevContractAddress
-        );
         let eventName = 'TestEvent';
 
         const eventJsonInterface = window.web3.utils._.find(
-            contract._jsonInterface,
+            contractWeb3._jsonInterface,
             o => o.name === eventName && o.type === 'event',
         );
 
         window.web3.eth.subscribe('logs', {
-                address: contract.options.address,
+                address: contractWeb3.options.address,
                 topics: [eventJsonInterface.signature]
             }, (error, result) => {
                 if (error) {
@@ -108,25 +106,39 @@ function Content(props, context) {
         console.log("subscribed to TestEvent on DevContract");
     };
 
+    const click6 = () => {
+        contractWeb3.methods.triggerEvent().send({
+            from: props.defaultAccount
+        })
+        .then(function(result) {
+            console.log('Result: ', result);
+        });
+    };
+
     return (
         <>
+            <h2>drizzle</h2>
             <a href="#" onClick={click1}>Trigger contract event using <b>drizzle cacheSend()</b></a>
             <br/>
             <a href="#" onClick={click2}>Trigger contract event using <b>drizzle send()</b></a>
+
+            <h2>web3</h2>
+            <a href="#" onClick={click4}>1. Add contract</a>
             <br/>
+            <a href="#" onClick={click5}>2. Subscribe to TestEvent using <b>web3</b></a>
+            <br/>
+            <a href="#" onClick={click6}>3. Trigger contract event using <b>web3 send()</b></a>
+
+            <h2>@truffle/contract</h2>
             <a href="#" onClick={click3}>Trigger contract event using <b>@truffle/contract</b></a>
-            <br/>
-            <a href="#" onClick={click4}>Trigger contract event using <b>web3 send()</b></a>
+
             <br/><br/>
-            <a href="#" onClick={click5}>Subscribe to TestEvent using <b>web3</b></a>
-            <br/><br/>
-            <b>Contract events received via redux store</b>:
+            <h3>Contract events received via redux store</h3>
             {props.contractEventsReceived.map((obj, index) => {
                 return (
                     <div key={index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
                 )})}
-            <br/><br/>
-            <b>Contract events received via subscriptions</b>:
+            <h3>Contract events received via web3 subscription</h3>
             {contractEvents.current.map((obj, index) => {
                 return (
                     <div key={index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
