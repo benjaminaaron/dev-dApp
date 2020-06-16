@@ -1,6 +1,0 @@
-
-const contractCall = () => {};
-
-export {
-	contractCall
-};
