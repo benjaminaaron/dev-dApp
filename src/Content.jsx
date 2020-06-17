@@ -14,16 +14,13 @@ function Content(props) {
 
     const contractEvents = useRef([]);
     const forceUpdate = useForceUpdate();
-    const [defaultAccount, setDefaultAccount] = useState(null);
+    const [defaultAccount, setDefaultAccount] = useState(''); // set manually
 
     const click1 = () => {
         window.web3 = new Web3(window.ethereum);
         try {
             window.ethereum.enable();
-
-            let user = window.web3.eth.accounts.currentProvider.selectedAddress;
-            console.log("user", user);
-            setDefaultAccount(user);
+            console.log("ethereum enabled");
         } catch (error) {
             console.log("error", error);
         }
