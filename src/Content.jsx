@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { drizzleConnect } from 'drizzle-react';
-import PropTypes from 'prop-types';
+
 import { DevContractAddress } from './config/deployment-info.js';
 import Web3 from 'web3';
 import { ethers } from "ethers";
@@ -11,25 +10,23 @@ const useForceUpdate = () => { // via https://stackoverflow.com/a/53837442/24741
     return () => setValue(value => ++value);
 }
 
-function Content(props, context) {
+function Content(props) {
 
     const contractEvents = useRef([]);
     const forceUpdate = useForceUpdate();
-
-    // drizzle
+    const [defaultAccount, setDefaultAccount] = useState(null);
 
     const click1 = () => {
-        let contract = context.drizzle.contracts.DevContract;
-        const stackId = contract.methods.triggerEvent.cacheSend({ from: props.defaultAccount });
-    };
+        window.web3 = new Web3(window.ethereum);
+        try {
+            window.ethereum.enable();
 
-    const click2 = () => {
-        context.drizzle.contracts.DevContract.methods
-            .triggerEvent()
-            .send({ from: props.defaultAccount })
-            .then(result => {
-                console.log('Results of submitting: ', result);
-            });
+            let user = window.web3.eth.accounts.currentProvider.selectedAddress;
+            console.log("user", user);
+            setDefaultAccount(user);
+        } catch (error) {
+            console.log("error", error);
+        }
     };
 
     // @truffle/contract
@@ -44,7 +41,7 @@ function Content(props, context) {
 
         contractDeployed.then(function(instance) {
             return instance['triggerEvent']({
-                from: props.defaultAccount
+                from: defaultAccount
             });
         })
         .then(function(result) {
@@ -109,7 +106,7 @@ function Content(props, context) {
 
     const click6 = () => {
         contractWeb3.methods.triggerEvent().send({
-            from: props.defaultAccount
+            from: defaultAccount
         })
         .then(function(result) {
             console.log('Result: ', result);
@@ -154,10 +151,8 @@ function Content(props, context) {
                 <tbody>
                     <tr>
                         <td>
-                            <h2>drizzle</h2>
-                            <a href="#" onClick={click1}>Trigger contract event using <b>drizzle cacheSend()</b></a>
-                            <br/>
-                            <a href="#" onClick={click2}>Trigger contract event using <b>drizzle send()</b></a>
+
+                            <a href="#" onClick={click1}>Unlock account</a>
 
                             <h2>web3</h2>
                             <a href="#" onClick={click4}>1. Add contract</a>
@@ -175,11 +170,6 @@ function Content(props, context) {
                             <a href="#" onClick={click8}>2. Trigger contract event using <b>ethers</b></a>
                         </td>
                         <td>
-                            <h3>Contract events received via drizzle redux store:</h3>
-                            {props.contractEventsReceived.map((obj, index) => {
-                                return (
-                                    <div key={'redux_' + index}><small>{obj.contractAddress}</small> says: {obj.numb}</div>
-                                )})}
                             <h3>Contract events received via web3 subscription:</h3>
                             {contractEvents.current.map((obj, index) => {
                                 return (
@@ -198,15 +188,4 @@ function Content(props, context) {
     )
 }
 
-Content.contextTypes = {
-    drizzle: PropTypes.object
-};
-
-const mapStateToProps = state => {
-    return {
-        contractEventsReceived: state.dappStore.contractEventsReceived,
-        defaultAccount: state.dappStore.defaultAccount
-    };
-};
-
-export default drizzleConnect(Content, mapStateToProps);
+export default Content;
