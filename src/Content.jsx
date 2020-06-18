@@ -133,6 +133,8 @@ function Content(props) {
             forceUpdate();
         });
 
+        console.log("ethers: subscribed to TestEvent");
+
         setEthersContract(_ethersContract);
     };
 
