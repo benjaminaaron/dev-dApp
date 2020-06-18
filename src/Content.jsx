@@ -142,6 +142,13 @@ function Content(props) {
         });
     };
 
+    const click9 = () => {
+        // TODO try out once released:
+        // https://github.com/MetaMask/metamask-extension/issues/1190#issuecomment-645678763
+    };
+
+    const click10 = () => {};
+
     return (
         <>
             <table border="1">
@@ -165,6 +172,11 @@ function Content(props) {
                             <a href="#" onClick={click7}>1. Add contract and event listener</a>
                             <br/>
                             <a href="#" onClick={click8}>2. Trigger contract event using <b>ethers</b></a>
+
+                            <h2>encrypt/decrypt</h2>
+                            <a href="#" onClick={click9}>Encrypt message</a>
+                            <br/>
+                            <a href="#" onClick={click10}>Decrypt message</a>
                         </td>
                         <td>
                             <h3>Contract events received via web3 subscription:</h3>
