@@ -145,6 +145,9 @@ function Content(props, context) {
     const click8 = () => {
         ethersContract.triggerEvent().then(function(tx) {
             console.log('ethers tx result:', tx);
+            tx.wait().then(function(receipt) {
+                console.log("receipt: ", receipt);
+            });
         });
     };
 
